@@ -6,7 +6,7 @@ const LibraryModeManager = require('./LibraryModeManager')
 const ReaderModeManager = require('./ReaderModeManager')
 
 class ContentScript {
-  constructor () {
+  constructor() {
     this._mode = null
     this._currentFolderId = null
     this._currentGroupId = null
@@ -16,15 +16,15 @@ class ContentScript {
     this._currentURL = null
     this._mendeleyEnabled = false
   }
-  checkAccessToken () {
+  checkAccessToken() {
     let that = this
     return new Promise((resolve, reject) => {
       chrome.storage.sync.get(['MENDELEY_ENABLED'], (options) => {
         that._mendeleyEnabled = options['MENDELEY_ENABLED'] != null ? options['MENDELEY_ENABLED'] : false
         if (!that._mendeleyEnabled) return
         MendeleyContentScriptClient.checkAccessToken().then((response) => {
-            resolve()
-          },
+          resolve()
+        },
           (error) => {
             reject()
           }
@@ -32,7 +32,7 @@ class ContentScript {
       })
     })
   }
-  destroyCurrentModeManager () {
+  destroyCurrentModeManager() {
     if (this._libraryManager != null) {
       this._libraryManager.destroy()
       this._libraryManager = null
@@ -42,10 +42,10 @@ class ContentScript {
       this._readerManager = null
     }
   }
-  framendeleyModeManager (newUrl) {
+  framendeleyModeManager(newUrl) {
     let oldURL = this._currentURL
     let newUrl2 = newUrl.split('#')[0]
-    if (newUrl2.charAt(newUrl2.length-1) == '/') newUrl2 = newUrl2.substring(0,newUrl2.length-1)
+    if (newUrl2.charAt(newUrl2.length - 1) == '/') newUrl2 = newUrl2.substring(0, newUrl2.length - 1)
     if (oldURL == newUrl2) return
 
     this.destroyCurrentModeManager()
@@ -57,7 +57,7 @@ class ContentScript {
       let m = newUrl.match(libraryFolderRegexp)
       if (m.length < 3) return
       let folderId = m[2]
-      this._libraryManager = new LibraryModeManager(null,folderId)
+      this._libraryManager = new LibraryModeManager(null, folderId)
       this._libraryManager.init()
     }
     else if (groupFolderRegexp.test(newUrl)) {
@@ -65,7 +65,7 @@ class ContentScript {
       if (m.length < 4) return
       let groupId = m[2]
       let folderId = m[3]
-      this._libraryManager = new LibraryModeManager(groupId,folderId)
+      this._libraryManager = new LibraryModeManager(groupId, folderId)
       this._libraryManager.init()
     }
     else if (documentReaderRegexp.test(newUrl)) {
@@ -73,16 +73,16 @@ class ContentScript {
       if (m.length < 4) return
       let documentId = m[2]
       let fileId = m[3]
-      this._readerManager = new ReaderModeManager(documentId,fileId)
+      this._readerManager = new ReaderModeManager(documentId, fileId)
       this._readerManager.init()
       //this._libraryManager = new LibraryModelManager(null,folderId)
     }
     this._currentURL = newUrl
   }
-  manageUrlChange () {
+  manageUrlChange() {
     let that = this
     let initialUrl = document.location.href.split('#')[0]
-    if (initialUrl.charAt(initialUrl.length-1) == '/') initialUrl = initialUrl.substring(0,initialUrl.length-1)
+    if (initialUrl.charAt(initialUrl.length - 1) == '/') initialUrl = initialUrl.substring(0, initialUrl.length - 1)
     that.framendeleyModeManager(initialUrl)
     chrome.runtime.onMessage.addListener((message) => {
       if (message == null) return
@@ -91,7 +91,7 @@ class ContentScript {
       //that._currentURL = message.newURL
     })
   }
-  init () {
+  init() {
     this.checkAccessToken().then(() => {
       Scrap.onLoad().then(() => {
         Scrap.insertFramendeleyLogo()
