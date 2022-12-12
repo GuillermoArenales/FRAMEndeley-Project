@@ -4,7 +4,7 @@ const MendeleyContentScriptClient = require('./MendeleyContentScriptClient')
 const Alerts = require('./Alerts')
 const LibraryModeManager = require('./LibraryModeManager')
 const ReaderModeManager = require('./ReaderModeManager')
-const GAManager = require('./GAContentScript')
+const GAManagerG = require('./GAContentScript')
 
 class ContentScript {
   constructor () {
