@@ -33,6 +33,9 @@
       "run_at": "document_end"
     }
   ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+  },
   "options_page": "pages/options.html",
   "options_ui": {
     "page": "pages/options.html",
