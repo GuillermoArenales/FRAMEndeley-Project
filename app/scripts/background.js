@@ -1,9 +1,13 @@
 
 const OAuth2 = require("./oauth2");
 const MendeleyBackgroundClient = require('./MendeleyBackgroundClient')
+const GABackground = require('./GABackground')
 
 let MendeleyManager = new MendeleyBackgroundClient()
 MendeleyManager.init()
+
+let GABackgroundManager = new GABackground()
+GABackgroundManager.init()
 
 function makeRequest (opts) {
   return new Promise(function (resolve, reject) {

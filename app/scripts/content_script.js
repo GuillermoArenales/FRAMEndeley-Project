@@ -4,7 +4,7 @@ const MendeleyContentScriptClient = require('./MendeleyContentScriptClient')
 const Alerts = require('./Alerts')
 const LibraryModeManager = require('./LibraryModeManager')
 const ReaderModeManager = require('./ReaderModeManager')
-const GAManager = require('./GAContentScript')
+const GAModeManager = require('./GAContentScript')
 
 class ContentScript {
   constructor () {
@@ -14,6 +14,7 @@ class ContentScript {
     this._currentDocumentId = null
     this._libraryManager = null
     this._readerManager = null
+    this._GAManager=null
     this._currentURL = null
     this._mendeleyEnabled = false
   }
@@ -42,6 +43,10 @@ class ContentScript {
       this._readerManager.destroy()
       this._readerManager = null
     }
+    if (this._GAManager != null) {
+      this._GAManager.destroy()
+      this._GAManager = null
+    }
   }
   framendeleyModeManager (newUrl) {
     let oldURL = this._currentURL
@@ -54,6 +59,8 @@ class ContentScript {
     let libraryFolderRegexp = /https?:\/\/(www\.)?mendeley\.com\/reference-manager\/library\/collections\/(.+)\/all-references\/?/
     let groupFolderRegexp = /https?:\/\/(www\.)?mendeley\.com\/reference-manager\/library\/groups\/private\/(.+)\/collections\/(.+)\/all-references\/?/
     let documentReaderRegexp = /https?:\/\/(www\.)?mendeley\.com\/reference-manager\/reader\/(.+)\/(.+)\/?/
+    //let GAModeREgexp = ...
+
     if (libraryFolderRegexp.test(newUrl)) {
       let m = newUrl.match(libraryFolderRegexp)
       if (m.length < 3) return
@@ -78,6 +85,14 @@ class ContentScript {
       this._readerManager.init()
       //  this._libraryManager = new LibraryModelManager(null,folderId)
     }
+
+    /*
+     else if (GAModeREgexp.test(newUrl)) {
+
+
+     }
+
+     */
     this._currentURL = newUrl
   }
   manageUrlChange () {
